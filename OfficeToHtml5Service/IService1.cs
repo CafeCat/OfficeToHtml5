@@ -12,36 +12,29 @@ namespace OfficeToHtml5Service
     [ServiceContract]
     public interface IService1
     {
-
         [OperationContract]
-        string GetData(int value);
-
-        [OperationContract]
-        CompositeType GetDataUsingDataContract(CompositeType composite);
-
-        // TODO: Add your service operations here
+        [WebInvoke(Method = "POST",
+            BodyStyle = WebMessageBodyStyle.Wrapped,
+            ResponseFormat = WebMessageFormat.Json,
+            RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "getOfficeHtml5View")]
+        [return: MessageParameter(Name = "officeConverstionDataObj")]
+        officeConverstionDataObj getOfficeHtml5View(officeConverstionDataObj postOfficeObj);
     }
 
 
-    // Use a data contract as illustrated in the sample below to add composite types to service operations.
     [DataContract]
-    public class CompositeType
+    public class officeConverstionDataObj
     {
-        bool boolValue = true;
-        string stringValue = "Hello ";
-
         [DataMember]
-        public bool BoolValue
-        {
-            get { return boolValue; }
-            set { boolValue = value; }
-        }
-
+        public string theFileUrl { get; set; }
         [DataMember]
-        public string StringValue
-        {
-            get { return stringValue; }
-            set { stringValue = value; }
-        }
+        public string convertedHtml5FileUrl { get; set; }
+        [DataMember]
+        public string error { get; set; }
+        [DataMember]
+        public string debugMsg { get; set; }
+        [DataMember]
+        public string fileContext { get; set; }
     }
 }
