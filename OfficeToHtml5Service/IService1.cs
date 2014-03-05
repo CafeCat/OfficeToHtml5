@@ -18,7 +18,7 @@ namespace OfficeToHtml5Service
             ResponseFormat = WebMessageFormat.Json,
             RequestFormat = WebMessageFormat.Json,
             UriTemplate = "getOfficeHtml5View")]
-        [return: MessageParameter(Name = "officeConverstionDataObj")]
+        [return: MessageParameter(Name = "offi  ceConverstionDataObj")]
         officeConverstionDataObj getOfficeHtml5View(officeConverstionDataObj postOfficeObj);
     }
 
