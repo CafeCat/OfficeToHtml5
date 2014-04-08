@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Web
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeToHtml5Service", "OfficeToHtml5Service\OfficeToHtml5Service.csproj", "{71230EC7-F9E6-47EB-AE00-862C8E5421DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{5C61B742-3EE1-4A60-A0DA-FCEA026C7B65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{71230EC7-F9E6-47EB-AE00-862C8E5421DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71230EC7-F9E6-47EB-AE00-862C8E5421DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71230EC7-F9E6-47EB-AE00-862C8E5421DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C61B742-3EE1-4A60-A0DA-FCEA026C7B65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C61B742-3EE1-4A60-A0DA-FCEA026C7B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C61B742-3EE1-4A60-A0DA-FCEA026C7B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C61B742-3EE1-4A60-A0DA-FCEA026C7B65}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

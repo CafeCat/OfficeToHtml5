@@ -10,6 +10,7 @@ using Microsoft.Office.Core;
 using Microsoft.Office.Interop.Word;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Net;
 
 namespace OfficeToHtml5Service
 {
@@ -18,27 +19,15 @@ namespace OfficeToHtml5Service
         public officeConverstionDataObj getOfficeHtml5View(officeConverstionDataObj postOfficeObj)
         {
             string errorMessage = null;
-            string srcPath = postOfficeObj.theFileUrl;
-            string fileName = srcPath.Split('\\').Last();
+            string fileName = postOfficeObj.theFileUrl.Split('/').Last();
             string thePhysicalFilePath = System.Web.Hosting.HostingEnvironment.MapPath("~") + @"\TempFiles\" + fileName;
-            string randomFileName = DateTime.Now.ToFileTime().ToString() + "." + fileName;
-            string randomFileNameWithoutExe = randomFileName.Substring(0, randomFileName.Length - (randomFileName.Split('.').Last().Length + 1));
             string fileNameWithoutExe = fileName.Substring(0, fileName.Length - (fileName.Split('.').Last().Length + 1));
-            string convertedHtmlPhysicalFilePath = "", convertedHtmlFile = "";
+            string randomFileNameWithoutExe = DateTime.Now.ToFileTime().ToString() + "." + fileNameWithoutExe;
+            string convertedHtmlPhysicalFilePath = thePhysicalFilePath.Replace(fileName, randomFileNameWithoutExe + ".htm");
+            string convertedHtmlUrl = System.Web.HttpRuntime.AppDomainAppVirtualPath + @"/TempFiles/" + randomFileNameWithoutExe + ".htm";
+            //postOfficeObj.debugMsg = "get directory name:" + Path.GetDirectoryName(convertedHtmlPhysicalFilePath) + " nameEnding:" + convertedHtmlPhysicalFilePath.Replace(convertedHtmlPhysicalFilePath.Split('.')[0] + ".", "");
 
-            try
-            {
-                File.Copy(srcPath, thePhysicalFilePath, true);
-                convertedHtmlPhysicalFilePath = thePhysicalFilePath.Replace(fileName, randomFileNameWithoutExe + ".htm");
-                string applicationVirtaulRoot = System.Web.HttpRuntime.AppDomainAppVirtualPath;
-                convertedHtmlFile = applicationVirtaulRoot + @"/TempFiles/" + randomFileNameWithoutExe + ".htm";
-
-            }
-            catch (Exception ex)
-            {
-                errorMessage += ", " + ex.Message;
-            }
-            errorMessage += "physical html:" + convertedHtmlPhysicalFilePath + " ,virtual html:" + convertedHtmlFile;
+            //Delete converted temp html files
             try
             {
                 string originalFileNameEnding = convertedHtmlPhysicalFilePath.Replace(convertedHtmlPhysicalFilePath.Split('.')[0] + ".", "");
@@ -60,38 +49,51 @@ namespace OfficeToHtml5Service
             }
             catch (Exception ex)
             {
-                errorMessage += "Server can not delete temperary files("+ex.Message+").";
+                errorMessage = "Server can not delete temperary files.";
             }
-            try
+
+            //Copy file from remoate location to FeedReports's temp folder
+            using (WebClient wc = new WebClient())
             {
-                //File.Copy(thePhysicalFilePath, originalFileSaveAs); 
-                string ext = fileName.Split('.').Last();
-                if (ext == "doc" || ext == "docx" || ext == "txt")
-                {
-                    myDocToHtml docToHtml = new myDocToHtml(thePhysicalFilePath, convertedHtmlPhysicalFilePath);
-                    docToHtml.convert();
-                }
-                else if (ext == "xls" || ext == "xlsx")
-                {
-                    object XlsFormat = Microsoft.Office.Interop.Excel.XlFileFormat.xlHtml;
-                    myXlsToHtml myXlsHtml = new myXlsToHtml(thePhysicalFilePath, convertedHtmlPhysicalFilePath);
-                    myXlsHtml.convert();
-                }
-                else if (ext == "csv")
-                {
-                    myCsvToHtml csvToHtml = new myCsvToHtml(thePhysicalFilePath);
-                    postOfficeObj.fileContext = csvToHtml.Convert();
-                }
+                wc.UseDefaultCredentials = true;
+                wc.DownloadFile(postOfficeObj.theFileUrl, thePhysicalFilePath);
             }
-            catch (Exception ex)
+
+
+            //Convert documents
+            if (File.Exists(thePhysicalFilePath))
             {
-                errorMessage = errorMessage + " Server can not convert the document to html("+ex.Message+").";
+                try
+                {
+                    string ext = fileName.Split('.').Last();
+                    if (ext == "doc" || ext == "docx" || ext == "txt")
+                    {
+                        myDocToHtml docToHtml = new myDocToHtml(thePhysicalFilePath, convertedHtmlPhysicalFilePath);
+                        docToHtml.convert();
+                    }
+                    else if (ext == "xls" || ext == "xlsx")
+                    {
+                        object XlsFormat = Microsoft.Office.Interop.Excel.XlFileFormat.xlHtml;
+                        myXlsToHtml myXlsHtml = new myXlsToHtml(thePhysicalFilePath, convertedHtmlPhysicalFilePath);
+                        myXlsHtml.convert();
+                    }
+                    else if (ext == "csv")
+                    {
+                        myCsvToHtml csvToHtml = new myCsvToHtml(thePhysicalFilePath);
+                        postOfficeObj.fileContext = csvToHtml.Convert();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    errorMessage = errorMessage + " Server can not convert the document to html.";
+                }
             }
-            finally
+            else
             {
-                postOfficeObj.convertedHtml5FileUrl = convertedHtmlFile;
-                postOfficeObj.error = errorMessage;
+                errorMessage += "Copy files from remote server failed.";
             }
+            postOfficeObj.convertedHtml5FileUrl = convertedHtmlUrl;
+            postOfficeObj.error = errorMessage;
             return postOfficeObj;
         }
     }

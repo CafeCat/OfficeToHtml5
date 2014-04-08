@@ -14,7 +14,7 @@
 <body>
     <form class="form-inline" role="form" id="viewer_controller">
         <div class="form-group">
-            <label for="in_filepath">Physical file path:</label>
+            <label for="in_filepath">File URL:</label>
             <input type="text" class="form-control" id="in_filepath" placeholder="c:\somefolder\somefile.someExtension" style="width:500px;"/>
         </div>
        
