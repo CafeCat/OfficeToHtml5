@@ -9,3 +9,7 @@ To test:
 2. enter a file physical path value in the property theFileURL(I know, it's not a url, it's a long story.). 
 3. Invoke
 4. get the viewable url path from the property convertedHtml5Url
+
+
+
+(check out the branch to use URL instead of physical path)
