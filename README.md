@@ -1,11 +1,8 @@
 OfficeToHtml5
 =============
 Convert OfficeToHtml is using the office interop assemblies.
-Samples are presented in the WCF service.
-Currently it's set up for debugger only, so the end point binding is not webHttpBinding.
+Conversion is done in the WCF service project.
+convertable document types are .doc, .docx, .txt, .xls, .xlsx, .csv
 
-To test:
-1. use debugger.
-2. enter a file physical path value in the property theFileURL(I know, it's not a url, it's a long story.). 
-3. Invoke
-4. get the viewable url path from the property convertedHtml5Url
+How it works:
+Web application take the targeted document's URL and send this to WCF application with ajax request. WCF application recieves the document's URL, copy the file to local server, convert the document to a viewable html file, and return the HTML URL to the client.
